@@ -86,6 +86,7 @@ const Signup = () => {
                         className="w-full bg-red-600 hover:bg-red-800 text-white py-2 px-4 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
                     >
                         Sign Up →
+                    
                     </button>
                 </form>
 
