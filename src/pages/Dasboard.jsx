@@ -6,7 +6,7 @@ import { getProfile } from "../redux/slice/LogSlice";
 import { FaRegUserCircle } from "react-icons/fa";
 import Products from "./Products";
 import CreateProd from "../components/CreateProd";
-import Settings from "./Settings";
+
 
 function Dashboard() {
 
@@ -14,8 +14,11 @@ function Dashboard() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [singlePro, setSinglePro] = useState(null)
+
     const data = useSelector((state) => state.sign);
-    console.log(data, "data")
+
+    // console.log(data, "data")
     useEffect(() => {
         if (data?.userData === null) {
             dispatch(getProfile());
@@ -26,6 +29,12 @@ function Dashboard() {
         Cookies.remove("token");
         navigate("/login");
     };
+
+    const handleAdd = () => {
+        setOpen(true);
+        setSinglePro(null);
+    }
+
 
     return (
         <div className="flex h-screen bg-gray-100">
@@ -53,15 +62,15 @@ function Dashboard() {
                 <div className="flex justify-between items-center">
 
                     <h2 className="text-3xl font-semibold text-gray-800">Dashboard Overview</h2>
-                    {!open && <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" onClick={() => setOpen(true)}>Add</button>}
+                    {!open && <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" onClick={handleAdd}>Add</button>}
                     {open && <CreateProd setClose={setOpen} />}
                 </div>
 
                 {/* Dashboard Cards */}
                 <div className="flex justify-center mt-8">
                     <div className="w-full md:w-4/5">
-                        <Products open={open} setOpen={setOpen} />
-               
+                        <Products open={open} setOpen={setOpen} setSinglePro={setSinglePro} singlePro={singlePro} />
+
 
                     </div>
                 </div>

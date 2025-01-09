@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { userLogin } from '../redux/slice/LogSlice';
+import { getProfile, userLogin } from '../redux/slice/LogSlice';
 import { toast, ToastContainer } from 'react-toastify';
+import { allProduct } from '../redux/slice/ProductSlice';
 
 
 const Login = () => {
@@ -18,6 +19,8 @@ const Login = () => {
         e.preventDefault()
         if (formData.email && formData.password) {
             dispatch(userLogin(formData))
+
+            dispatch(allProduct())
             navigate("/dashboard")
 
             setFormData({

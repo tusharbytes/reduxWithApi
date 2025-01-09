@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import createProducts, { handleUpdate } from '../redux/slice/ProductSlice';
+import { createProducts, handleUpdate } from '../redux/slice/ProductSlice';
+import { toast, ToastContainer } from 'react-toastify';
 
 const CreateProd = ({ setClose, singlePro }) => {
     const [addProduct, setAddProduct] = useState({
@@ -11,33 +12,44 @@ const CreateProd = ({ setClose, singlePro }) => {
 
     useEffect(() => {
         if (singlePro) {
-            setAddProduct({
-                name: singlePro.name || "",
-                price: singlePro.price || "",
-                category: singlePro.category || ""
-            });
+            handleEdit()
         }
-    }, [singlePro]);
+    }, []);
 
     const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        if (singlePro) {
-       
+        if (singlePro !== null) {
             dispatch(handleUpdate({ id: singlePro._id, updatedProduct: addProduct }));
+            toast.success("Product update Successfully")
         } else {
-        
             dispatch(createProducts(addProduct));
+            toast.success("Product create Successfully")
         }
+      
+        setAddProduct({
+            name: "",
+            price: "",
+            category: ""
+        })
+       
         setClose(false);
     };
+    const handleEdit = () => {
+        setAddProduct({
+            name: singlePro.name || "",
+            price: singlePro.price || "",
+            category: singlePro.category || ""
+        });
+    }
+ 
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="max-w-lg w-full mx-auto p-6 bg-white shadow-lg rounded-lg">
                 <h2 className="text-2xl font-semibold mb-4">
+                    <ToastContainer />
                     {singlePro ? "Edit Product" : "Create Product"}
                 </h2>
 
@@ -93,7 +105,7 @@ const CreateProd = ({ setClose, singlePro }) => {
                         onClick={handleSubmit}
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
                     >
-                        {singlePro ? "Update Product" : "Create Product"}
+                        {singlePro !== null ? "Update Product" : "Create Product"}
                     </button>
 
                     <button

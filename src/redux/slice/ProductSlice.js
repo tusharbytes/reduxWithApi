@@ -23,6 +23,7 @@ const createProducts = createAsyncThunk("createProducts", async (payload) => {
             "Authorization": `Bearer ${token}`
         }
     },)
+    console.log(response.data)
 
     return response.data
 })
@@ -31,7 +32,7 @@ const removeProd = createAsyncThunk("removePro", async (id) => {
 
     const response = await axios.delete(`${url}delete/product/${id}`, {
         headers: {
-            "Content-Type": "application/json",
+
             "Authorization": `Bearer ${token}`
         }
     },)
@@ -68,7 +69,8 @@ const getPro = createSlice({
     }),
     reducers: {
         setProducts: (state, action) => {
-            state.products = action.payload
+            state.products.data = action.payload
+
         }
     },
     extraReducers: (builder) => {
@@ -93,10 +95,11 @@ const getPro = createSlice({
                 state.error = null
             })
             .addCase(createProducts.fulfilled, (state, action) => {
-                state.loading = false
-                state.products = (action.payload)
-                state.error = null
+                state.loading = false;
+                state.products?.data.push(action.payload.data)
+                state.error = null;
             })
+
             .addCase(createProducts.rejected, (state) => {
                 state.loading = false
 
@@ -113,11 +116,8 @@ const getPro = createSlice({
             })
             .addCase(removeProd.fulfilled, (state, action) => {
                 state.loading = false
-                const removeItem = action.payload
-                state.products = state?.products?.filter((product) =>
-                    product.index !== removeItem.index
-                )
-                state.error = null
+                state.products.data = state.products.data?.filter(product => product._id !== action.payload);
+
             })
             .addCase(removeProd.rejected, (state) => {
                 state.loading = false
@@ -130,10 +130,13 @@ const getPro = createSlice({
             })
             .addCase(handleUpdate.fulfilled, (state, action) => {
                 state.loading = false;
-                const updatedProduct = action.payload; // Assuming the API returns the updated product
-                state.products = state.products.map((product) =>
-                    product._id === updatedProduct._id ? updatedProduct : product)
+                const updatedProduct = action.payload.product;
+                state.products.data = state.products.data.map((product) =>
+                    product._id === updatedProduct._id ? updatedProduct : product
+                );
+
             })
+
             .addCase(handleUpdate.rejected, (state) => {
                 state.loading = false
                 state.error = null
